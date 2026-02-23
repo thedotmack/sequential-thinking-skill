@@ -67,10 +67,13 @@ Each thought is a deliberate step — Claude can **revise** when assumptions are
 ### Install
 
 ```bash
-# Clone the repo
-git clone https://github.com/thedotmack/sequential-thinking-skill.git
+npx skills add https://github.com/thedotmack/sequential-thinking-skill --skill sequential-thinking
+```
 
-# Copy the skill into Claude Code's skills directory
+Or manually:
+
+```bash
+git clone https://github.com/thedotmack/sequential-thinking-skill.git
 cp -r sequential-thinking-skill/sequential-thinking ~/.claude/skills/
 ```
 
