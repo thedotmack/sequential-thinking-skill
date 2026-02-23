@@ -1,5 +1,5 @@
 <p align="center">
-  <h1 align="center">ultrathink</h1>
+  <h1 align="center">sequential-thinking-skill</h1>
   <p align="center">
     Sequential thinking for Claude Code — no MCP server required.
     <br />
@@ -9,7 +9,7 @@
     <a href="#quick-start">Quick Start</a> &middot;
     <a href="#features">Features</a> &middot;
     <a href="#how-it-works">How It Works</a> &middot;
-    <a href="#comparison">MCP vs ultrathink</a>
+    <a href="#comparison">MCP vs sequential-thinking-skill</a>
   </p>
   <p align="center">
     <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="MIT License" /></a>
@@ -29,33 +29,27 @@ Claude gains structured, multi-step reasoning with **branching**, **revision**, 
 Here's what structured thinking looks like in action:
 
 ```
-┌──────────────────────────────────────────────────────────────────┐
-│ 💭 Thought 1/5                                                    │
-├──────────────────────────────────────────────────────────────────┤
-│ First, I need to clarify what type of auction we're dealing      │
-│ with. I'll assume sealed-bid first-price unless told otherwise.  │
-└──────────────────────────────────────────────────────────────────┘
+💭 Thought 1/5
+First, I need to clarify what type of auction we're dealing with.
+I'll assume sealed-bid first-price unless told otherwise.
+[1/5] history=1 next=true
 
-┌──────────────────────────────────────────────────────────────────┐
-│ 🔄 Revision 3/5 (revising thought 1)                             │
-├──────────────────────────────────────────────────────────────────┤
-│ Wait — I assumed one format, but the question is generic.        │
-│ I should cover multiple auction types. Changing approach.        │
-└──────────────────────────────────────────────────────────────────┘
+🔄 Revision 3/5 (revising thought 1)
+Wait — I assumed one format, but the question is generic.
+I should cover multiple auction types. Changing approach.
+[3/5] history=3 next=true
 
-┌──────────────────────────────────────────────────────────────────────┐
-│ 🌿 Branch 4/7 (from thought 2, ID: vickrey)                          │
-├──────────────────────────────────────────────────────────────────────┤
-│ In a Vickrey auction, the dominant strategy is to bid your true       │
-│ valuation regardless of the number of players. Exploring this path.  │
-└──────────────────────────────────────────────────────────────────────┘
+🌿 Branch 4/7 (from thought 2, ID: vickrey)
+In a Vickrey auction, the dominant strategy is to bid your true
+valuation regardless of the number of players. Exploring this path.
+[4/7] history=4 branches=vickrey next=true
 ```
 
 Each thought is a deliberate step — Claude can **revise** when assumptions are wrong, **branch** to explore alternatives, and **extend** when problems are deeper than expected.
 
 ## Features
 
-- **Sequential numbered thoughts** — structured chain-of-thought with formatted box output
+- **Sequential numbered thoughts** — structured chain-of-thought with formatted output
 - **Revisions** — reconsider and correct previous thoughts without losing the original
 - **Branching** — explore alternative paths from any thought, tracked by branch ID
 - **Dynamic depth** — adjust `totalThoughts` up or down as the problem unfolds
@@ -68,16 +62,16 @@ Each thought is a deliberate step — Claude can **revise** when assumptions are
 ### Prerequisites
 
 - [Claude Code](https://docs.anthropic.com/en/docs/claude-code) CLI
-- [`tsx`](https://github.com/privatenumber/tsx) — `npm install -g tsx`
+- [`tsx`](https://github.com/privatenumber/tsx) — available via `npx tsx` (no global install needed)
 
 ### Install
 
 ```bash
 # Clone the repo
-git clone https://github.com/thedotmack/ultrathink.git
+git clone https://github.com/thedotmack/sequential-thinking-skill.git
 
 # Copy the skill into Claude Code's skills directory
-cp -r ultrathink/sequential-thinking ~/.claude/skills/
+cp -r sequential-thinking-skill/sequential-thinking ~/.claude/skills/
 ```
 
 That's it. The skill auto-activates when Claude detects problems that benefit from structured reasoning.
@@ -90,8 +84,8 @@ The skill is powered by `think.ts`, a TypeScript state machine that:
 
 1. Maintains an **append-only thought history** on disk (`.think_state.json`)
 2. Tracks **branches** as named collections of thoughts forking from any point
-3. Returns **structured JSON** after each thought for programmatic use
-4. Renders **formatted boxes** to stderr for visual feedback
+3. Returns a **compact status line** to stdout after each thought (`[3/7] history=3 next=true`)
+4. Renders **formatted thought headers** to stderr for visual feedback
 
 Claude invokes it via `tsx scripts/think.ts` with CLI flags for each thought. The SKILL.md file instructs Claude on the protocol — when to branch, revise, extend, and terminate.
 
@@ -106,25 +100,23 @@ Claude invokes it via `tsx scripts/think.ts` with CLI flags for each thought. Th
 | `--needsMoreThoughts` | Signal that more thoughts are needed |
 | `--status` | Dump full state (history + branches) |
 
-### JSON Response
+### Output
 
-Every thought returns:
+Every thought prints a header and content to stderr, plus a compact status line to stdout:
 
-```json
-{
-  "thoughtNumber": 4,
-  "totalThoughts": 7,
-  "nextThoughtNeeded": true,
-  "branches": ["vickrey", "english"],
-  "thoughtHistoryLength": 4
-}
 ```
+💭 Thought 4/7
+In a Vickrey auction, the dominant strategy is...
+[4/7] history=4 branches=vickrey,english next=true
+```
+
+The `--status` command returns full JSON with `fullHistory` and `branchDetails`.
 
 ## Comparison
 
-How does ultrathink compare to the official MCP server?
+How does sequential-thinking-skill compare to the official MCP server?
 
-| | Sequential Thinking MCP | ultrathink |
+| | Sequential Thinking MCP | sequential-thinking-skill |
 |---|---|---|
 | **Setup** | Configure MCP server in `claude_desktop_config.json` | Copy a folder to `~/.claude/skills/` |
 | **Runtime** | Requires running MCP server process | Standalone TypeScript script |
@@ -137,7 +129,7 @@ How does ultrathink compare to the official MCP server?
 ## Project Structure
 
 ```
-ultrathink/
+sequential-thinking-skill/
 ├── sequential-thinking/
 │   ├── SKILL.md                       # Skill definition and protocol
 │   ├── scripts/

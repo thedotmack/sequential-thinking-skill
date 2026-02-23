@@ -64,7 +64,7 @@ npx tsx scripts/think.ts \
 
 ### Submit a Branch
 
-Explores an alternative path from a prior thought. Requires both `--branchFromThought` and `--branchId`. If only one is provided, branching is silently ignored (MCP parity).
+Explores an alternative path from a prior thought. Requires both `--branchFromThought` and `--branchId`.
 
 ```bash
 npx tsx scripts/think.ts \
