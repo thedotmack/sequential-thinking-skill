@@ -59,29 +59,17 @@ function saveState(state: State): void {
 }
 
 function formatThought(t: ThoughtData): string {
-  let prefix: string;
+  let header: string;
 
   if (t.isRevision && t.revisesThought != null) {
-    prefix = `🔄 Revision ${t.thoughtNumber}/${t.totalThoughts} (revising thought ${t.revisesThought})`;
+    header = `🔄 Revision ${t.thoughtNumber}/${t.totalThoughts} (revising thought ${t.revisesThought})`;
   } else if (t.branchFromThought != null && t.branchId != null) {
-    prefix = `🌿 Branch ${t.thoughtNumber}/${t.totalThoughts} (from thought ${t.branchFromThought}, ID: ${t.branchId})`;
+    header = `🌿 Branch ${t.thoughtNumber}/${t.totalThoughts} (from thought ${t.branchFromThought}, ID: ${t.branchId})`;
   } else {
-    prefix = `💭 Thought ${t.thoughtNumber}/${t.totalThoughts}`;
+    header = `💭 Thought ${t.thoughtNumber}/${t.totalThoughts}`;
   }
 
-  const lines = t.thought.split("\n");
-  const maxWidth =
-    Math.max(prefix.length, ...lines.map((l) => l.length)) + 4;
-  const border = "─".repeat(maxWidth);
-
-  const out = [
-    `┌${border}┐`,
-    `│ ${prefix.padEnd(maxWidth - 2)} │`,
-    `├${border}┤`,
-    ...lines.map((l) => `│ ${l.padEnd(maxWidth - 2)} │`),
-    `└${border}┘`,
-  ];
-  return out.join("\n");
+  return `${header}\n${t.thought}`;
 }
 
 function makeStatusResponse(state: State) {
@@ -217,4 +205,6 @@ saveState(state);
 console.error(formatThought(thoughtData));
 
 // Structured JSON → stdout (machine-readable)
-console.log(JSON.stringify(makeStatusResponse(state), null, 2));
+const status = makeStatusResponse(state);
+const branchList = status.branches.length > 0 ? ` branches=${status.branches.join(",")}` : "";
+console.log(`[${status.thoughtNumber}/${status.totalThoughts}] history=${status.thoughtHistoryLength}${branchList} next=${status.nextThoughtNeeded}`);
