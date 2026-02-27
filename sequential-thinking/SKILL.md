@@ -27,14 +27,14 @@ Each thought should be a single Bash tool call. Think in the thought, not outsid
 scripts/think.ts
 ```
 
-Run via `npx tsx` from the skill's base directory.
+Run via `bun` from the skill's base directory.
 
 ## Commands
 
 ### Reset (required before every new session)
 
 ```bash
-npx tsx scripts/think.ts --reset
+bun scripts/think.ts --reset
 ```
 
 ### Submit a Thought
@@ -42,7 +42,7 @@ npx tsx scripts/think.ts --reset
 Required flags: `--thought`, `--thoughtNumber`, `--totalThoughts`, `--nextThoughtNeeded`
 
 ```bash
-npx tsx scripts/think.ts \
+bun scripts/think.ts \
   --thought "Your analysis for this step" \
   --thoughtNumber 1 \
   --totalThoughts 5 \
@@ -54,7 +54,7 @@ npx tsx scripts/think.ts \
 Revises a previous thought. The original stays in history; the revision is appended as a new entry. Requires `--isRevision` and `--revisesThought`.
 
 ```bash
-npx tsx scripts/think.ts \
+bun scripts/think.ts \
   --thought "Corrected analysis" \
   --thoughtNumber 3 \
   --totalThoughts 5 \
@@ -67,7 +67,7 @@ npx tsx scripts/think.ts \
 Explores an alternative path from a prior thought. Requires both `--branchFromThought` and `--branchId`.
 
 ```bash
-npx tsx scripts/think.ts \
+bun scripts/think.ts \
   --thought "Alternative approach" \
   --thoughtNumber 4 \
   --totalThoughts 7 \
@@ -80,7 +80,7 @@ npx tsx scripts/think.ts \
 Signal that more thoughts are needed beyond the original estimate.
 
 ```bash
-npx tsx scripts/think.ts \
+bun scripts/think.ts \
   --thought "Scope is larger than expected" \
   --thoughtNumber 6 \
   --totalThoughts 8 \
@@ -91,7 +91,7 @@ npx tsx scripts/think.ts \
 ### Inspect Full State
 
 ```bash
-npx tsx scripts/think.ts --status
+bun scripts/think.ts --status
 ```
 
 Returns JSON with `fullHistory` and `branchDetails`.
